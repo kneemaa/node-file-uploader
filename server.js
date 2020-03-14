@@ -3,7 +3,7 @@ const app = express()
 const multer = require('multer')
 const fs = require('fs');
 const dir = './uploads';
-const port = 80
+const port = 3000
 
 if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
@@ -12,12 +12,12 @@ let storage = multer.diskStorage({
     destination: (req, file, callback) => {
         callback(null, './uploads')
     },
-    filename: (req,file, callback) => {
-        callback(null, file.fieldname + '-' + Date.now())
-    }
+    filename: (req, file, cb) => {
+        cb(null, file.originalname)  //this is bad practice but used for this demo
+      }
 })
 
-let upload = multer({ storage : storage}).single('upload')
+const upload = multer({ storage : storage}).single('upload')
 
 app.get('/', (req, res) => {
     res.sendFile('home.html', { root: __dirname + "/public" })
